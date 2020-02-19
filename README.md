@@ -5,31 +5,43 @@ Sentiment Analysis is a branch of Natural Language Processing (NLP) that allows 
 ## Data Cleaning
 Before delving into exploratory testing and data modelling, we first need to clean the data. I cleaned two data sets - the first being an extracted generic tweets data set and another dataset containing US Airline tweets. The generic tweets dataset will be used to train a model to predict the sentiment of the US airline tweet. Data cleaning was performed by first importing the tweets into a dataframe and then parsing through each tweet while applying certain operations to clean the text. One way I determined that the data required cleaning is through the length of the text. Typically, tweets are restricted to only 140 characters, but the data seemed to contain texts larger than this amount. 
 
-
+<p align="center">
+<img src = "images/1_Length_Before_Cleaning.PNG" width="450" class="center">
+</p>
 
 Looking at some raw tweets, it seems that they contained HTML elements that made the text longer. Moreover, these also contained mentions of the airline and other users. The data cleaning process that I used was first to remove these HTML entities by using the BeautifulSoup library. Second, I removed contractions to accomodate for informalities in the English language especially with contractions. Mentions were also removed. However, if they mentioned a specific airline it would be stored as a column in the dataframe. I also removed stop works excluding the word "not" as it may have a large impact in the overall sentiment of the tweet. The histogram below depicts the changes in tweet length and it seems more reasonable now. 
 
-PICTURE 2
+<p align="center">
+<img src = "images/2_Before_After_Cleaning.PNG" width="450" class="center">
+</p>
 
 ## Exploratory Testing
 Going through the cleaned and raw data, it is clear that the associated airline for each tweet is either typically mentioned in the beginning of the tweet or mentioned in the hashtag. Hence, I stored these information in a new column. Additionally, each tweet was already assigned a sentiment value and negative reason. Hence, this problem is an example of a supervised machine learning problem. I did a quick count and saw the United was most frequently tweeted about, particularly in a negative way. 
 
-PICTURE 3
+<p align="center">
+<img src = "images/3_positive_negative_tweets.PNG" width="600" class="center">
+</p>
 
 Comparing the negative and positive tweets, there were more negative tweets associated with the US Airlines in 2015. Among all airlines, United and US Airways received the bulk of negative tweets in the provided dataset. Nevertheless, there were also some people who tweeted positive things about these airlines, but these are a very small number. It should be noted that some tweets may have been attributed to multiple airlines. For example, a tweet comparing United to Virgin America may be negative for United but positive for the latter airline. Despite this possibility, it is assumed that the subject of the tweet would be mentioned in the beginning of the tweet as indicated in the raw data set.
 
 ### Other Visualization Methods
 Other ways to present data found in the tweets is through using a word cloud. This would help identify which words most frequently come up for positive (shown in green) and negative (shown in red) tweets for the US Airline tweets. 
 
-PICTURE 4
+<p align="center">
+<img src = "images/4_word_cloud_positive.PNG" width="600" class="center">
+</p>
 
-PICTURE 5
+<p align="center">
+<img src = "images/5_word_cloud_negative.PNG" width="600" class="center">
+</p>
 
 Based on the word clouds, we can see positive tweets in the US airline data set contain feelings of thankfulness most likely due to great customer service. On the other hand, words that show up in the negative sentiment tweets in the US airline data contain mostly the words relating to customer service, flights (probably caused by delayed or late flights). It is interesting to see the word "thank" in the word cloud since it must have been used in a sarcastic tone in the tweet.
 
 A stacked bar graph illustrating the negative reasons associated with each airline helps us understand the distribution of reasons why people are displeased with an associated airline. 
 
-PICTURE 6 
+<p align="center">
+<img src = "images/5_negative_reason.PNG" width="450" class="center">
+</p>
 
 Based on the stacked bar graph, most of the negative reasons associated with the negative sentiment tweets in the US airline are dealing with customer service related issues. United, American Air, and US Airways typicallly have the most complaints among the variety of negative reasons. Most of which are due to poor customer service.
 
@@ -39,11 +51,15 @@ To help aid with the features of the model, I decided to use a CountVectorizer t
 ## Model Implementation
 Seeing as this is a sentiment analysis problem, a good model to use for a classification problem is the logistic regression model. To see how well this model performs, I first trained a model using a vectorized generic tweets data set to see if it could predict the sentiment correctly. I did this by first dividing the model into 70% training and 30% testing sets. The logistic regression model was created using the scikit learn library. The confusion matrix of the resulting model is shown below: 
 
-PICTURE 7
+<p align="center">
+<img src = "images/7_Confusion_matrix_generic.PNG" width="450" class="center">
+</p>
 
 Ideally, a good model is one whose diagonal components of the confusion matrix should be relatively high as these correspond to the model's accuracy of true positives and true negatives. The confusion matrix also complements the previously reported recall and precision values of the positive and negative tweets. Based on these results, the model seems to perform well and can be used for US Airline tweets. Going through the same process, the resulting confusion matrix indicates that the model tends to incorrectly identify certain tweets as positive where in fact, they were negative. 
 
-PICTURE 8
+<p align="center">
+<img src = "images/8_Confusion_matrix_airline.PNG" width="450" class="center">
+</p>
 
 ### How well did the predictions match the sentiment labelled in the US Airline Data? 
 The model trained from the generic tweets data set achieved an accuracy of 78.18% in estimating the sentiment of the airline tweets. Looking into the classification report and confusion matrix, it can be seen that the model can estimate negative sentiment tweets better than the positive sentiment. The model was also noted to incorrectly estimate negative tweets as positive tweets. This may be attributed with the decision threshold between the two binary classes as seen on the curvature and area of the ROC curve shown inside the notebook (ideally, we would want this curve to be closer to the upper left corner and have an area of 1). This shape is attributed to challenging decision thresholds from the features of the tweets. Nevertheless, this model achieved a relatively high accuracy of 78.18% accuracy and is suitable for sentiment analysis.
@@ -54,12 +70,15 @@ The logistic regression model was quite accurate in predicting the sentiment of 
 ### "What can public opinion on Twitter tell us about US airlines in 2015?"
 From the data cleaning process, we saw that most tweets in the US airline dataset contained mostly negative sentiment. We will first look into the predicted sentiment and compare it to the actual sentiment available in the data set with respect to each US airline.
 
-PICTURE 9
-
+<p align="center">
+<img src = "images/9_Actual_vs_Predicted_negative.PNG" width="450" class="center">
+</p>
 
 Based on a comparison of the distribution of the negative sentiment tweets, the model was quite accurate in determining the negative sentiment tweets of the US airlines. Most of the negative airlines were associated with United and US airways. The difference between the predicted and actual sentiment was very small - the model underestimated the negative sentiment towards United and US airways but the distribution of tweets classified in terms of sentiment was quite accurate.
 
-PICTURE 10 
+<p align="center">
+<img src = "images/10_Actual_vs_Predicted_positive.PNG" width="450" class="center">
+</p>
 
 Based on a comparison of the distribution of the positive sentiment tweets, the model was not as accurate in determining the positive sentiment tweets compared to the negative sentiment tweets of the US airlines. For example, the model slightly underestimated the positive sentiment of the tweets associated to jetblue, and southwest air.
 
